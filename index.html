@@ -80,6 +80,13 @@ h2 {
   font-size: 55px;
 }
 
+.product-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 .price {
   color: #168044;
   font-weight: bold;
@@ -107,6 +114,7 @@ footer {
     id="search"
     placeholder="सामान खोजें..."
     oninput="showProducts()">
+
   <button onclick="showCart()">🛒 Cart</button>
 </div>
 
@@ -124,7 +132,7 @@ footer {
 </div>
 
 <h2>आपका Cart</h2>
-<div id="cart"></div>
+<div id="cart" style="text-align:center; padding:15px;"></div>
 
 <footer>
   <p>© 2026 Gram Bazaar | Local Products, Local Business</p>
@@ -133,83 +141,174 @@ footer {
 <script>
 
 let products = [
-  {name:"ताजा टमाटर", price:30, emoji:"🍅", seller:"राम किसान"},
-  {name:"आलू", price:25, emoji:"🥔", seller:"श्याम किसान"},
-{
-  name:"चावल",
-  price:55,
-  image:"https://media.istockphoto.com/id/153737841/photo/rice.jpg?s=612x612&w=0&k=20&c=lfO7iLT0UsDDzra0uBOsN1rvr2d5OEtrG2uwbts33_c=",
-  seller:"मोहन किसान",
-  village:"सीतापुर",
-  category:"दाल और अनाज"
-},  {name:"गेहूं", price:40, emoji:"🌾", seller:"रवि किसान"},
-  {name:"दूध", price:50, emoji:"🥛", seller:"सुरेश डेयरी"},
-  {name:"शहद", price:120, emoji:"🍯", seller:"स्थानीय विक्रेता"}
+
+  {
+    name: "ताजा टमाटर",
+    price: 30,
+    emoji: "🍅",
+    seller: "राम किसान"
+  },
+
+  {
+    name: "आलू",
+    price: 25,
+    emoji: "🥔",
+    seller: "श्याम किसान"
+  },
+
+  {
+    name: "चावल",
+    price: 55,
+    image: "https://media.istockphoto.com/id/153737841/photo/rice.jpg?s=612x612&w=0&k=20&c=lfO7iLT0UsDDzra0uBOsN1rvr2d5OEtrG2uwbts33_c=",
+    seller: "मोहन किसान",
+    village: "सीतापुर",
+    category: "दाल और अनाज"
+  },
+
+  {
+    name: "दाल",
+    price: 90,
+    image: "https://t3.ftcdn.net/jpg/10/29/44/94/360_F_1029449403_nKNaUWyT9qxxac8gLk8PENcq2vFAaRJj.jpg",
+    seller: "राम किसान",
+    village: "सीतापुर",
+    category: "दाल और अनाज"
+  },
+
+  {
+    name: "मक्का",
+    price: 35,
+    image: "https://thumbs.dreamstime.com/b/ears-sweet-corn-10746409.jpg",
+    seller: "रवि किसान",
+    village: "सीतापुर",
+    category: "अनाज"
+  },
+
+  {
+    name: "गेहूं",
+    price: 40,
+    emoji: "🌾",
+    seller: "रवि किसान"
+  },
+
+  {
+    name: "दूध",
+    price: 50,
+    emoji: "🥛",
+    seller: "सुरेश डेयरी"
+  },
+
+  {
+    name: "शहद",
+    price: 120,
+    emoji: "🍯",
+    seller: "स्थानीय विक्रेता"
+  }
+
 ];
 
 let cart = [];
 
 function showProducts() {
+
   let search = document.getElementById("search")
     .value.toLowerCase();
 
   let box = document.getElementById("products");
+
   box.innerHTML = "";
 
   products.filter(p =>
     p.name.toLowerCase().includes(search)
-  ).forEach((p, index) => {
+  ).forEach(p => {
+
+    let index = products.indexOf(p);
+
     box.innerHTML += `
       <div class="card">
-        <div class="emoji">${p.emoji || "📦"}</div>
+
+        ${
+          p.image
+          ? `<img
+              class="product-image"
+              src="${p.image}"
+              alt="${p.name}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+             <div class="emoji" style="display:none;">📦</div>`
+          : `<div class="emoji">${p.emoji || "📦"}</div>`
+        }
+
         <h3>${p.name}</h3>
+
         <p class="price">₹${p.price}</p>
+
         <p>विक्रेता: ${p.seller}</p>
+
         <button onclick="addCart(${index})">
           Add to Cart
         </button>
+
       </div>
     `;
+
   });
+
 }
 
 function addCart(index) {
+
   cart.push(products[index]);
+
   alert("सामान Cart में जोड़ दिया गया!");
+
   showCart();
+
 }
 
 function showCart() {
+
   let box = document.getElementById("cart");
+
   box.innerHTML = "";
 
   let total = 0;
 
   cart.forEach(p => {
+
     total += Number(p.price);
+
     box.innerHTML += `
       <p>${p.name} - ₹${p.price}</p>
     `;
+
   });
 
   box.innerHTML += `<h3>कुल कीमत: ₹${total}</h3>`;
+
 }
 
 function addProduct() {
-  let name = document.getElementById("name").value;
+
+  let name = document.getElementById("name").value.trim();
+
   let price = Number(document.getElementById("price").value);
-  let seller = document.getElementById("seller").value;
+
+  let seller = document.getElementById("seller").value.trim();
 
   if (!name || price <= 0 || !seller) {
+
     alert("कृपया सभी जानकारी सही भरें!");
+
     return;
+
   }
 
   products.push({
+
     name: name,
     price: price,
     seller: seller,
     emoji: "📦"
+
   });
 
   showProducts();
@@ -219,10 +318,12 @@ function addProduct() {
   document.getElementById("seller").value = "";
 
   alert("आपका सामान जोड़ दिया गया!");
+
 }
 
 showProducts();
 
 </script>
+
 </body>
 </html>
